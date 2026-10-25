@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediTrack</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <header>
+        <h1>MediTrack</h1>
+        <p>Patient Health Records</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="#" data-tab="dashboard" class="active">Dashboard</a></li>
+            <li><a href="#" data-tab="patients">Patients</a></li>
+            <li><a href="#" data-tab="clinicians">Clinicians</a></li>
+            <li><a href="#" data-tab="encounters">Encounters</a></li>
+        </ul>
+    </nav>
+
+    <main class="container">
+
+        <div id="global-alert" class="alert-box"></div>
+
+        <section id="dashboard" class="tab-section active">
+            <h2>Dashboard Overview</h2>
+            
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <h4>Total Registered Patients</h4>
+                    <div class="count" id="stat-total-patients">0</div>
+                </div>
+                <div class="stat-box">
+                    <h4>Total Clinical Encounters</h4>
+                    <div class="count" id="stat-total-encounters">0</div>
+                </div>
+            </div>
+
+            <h3>Recently Added Patients</h3>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Patient ID</th>
+                            <th>Full Name</th>
+                            <th>Date of Birth</th>
+                            <th>Gender</th>
+                            <th>Blood Group</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recent-patients-tbody">
+                        <tr><td colspan="6" class="no-data">Loading recent patients...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="patients" class="tab-section">
+            <h2>Patient Management</h2>
+
+            <div class="search-container">
+                <input type="text" id="patient-search-input" placeholder="Search patients by name or patient ID...">
+                <button type="button" class="btn btn-primary" id="patient-search-btn">Search</button>
+                <button type="button" class="btn btn-secondary" id="patient-reset-btn">Reset</button>
+                <button type="button" class="btn btn-primary" id="toggle-patient-form-btn" style="margin-left: auto;">+ Register New Patient</button>
+            </div>
+
+            <div id="patient-form-panel" class="form-panel" style="display: none;">
+                <h3 id="patient-form-title">Register New Patient</h3>
+                <form id="patient-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="patient-name">Full Name <span class="req">*</span></label>
+                            <input type="text" id="patient-name" required placeholder="e.g. John Doe">
+                        </div>
+                        <div class="form-group">
+                            <label for="patient-dob">Date of Birth <span class="req">*</span></label>
+                            <input type="date" id="patient-dob" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="patient-gender">Gender <span class="req">*</span></label>
+                            <select id="patient-gender" required>
+                                <option value="">-- Select Gender --</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="patient-blood-group">Blood Group</label>
+                            <select id="patient-blood-group">
+                                <option value="">-- Select Blood Group --</option>
+                                <option value="A+">A+</option>
+                                <option value="A-">A-</option>
+                                <option value="B+">B+</option>
+                                <option value="B-">B-</option>
+                                <option value="AB+">AB+</option>
+                                <option value="AB-">AB-</option>
+                                <option value="O+">O+</option>
+                                <option value="O-">O-</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="patient-phone">Phone Number</label>
+                            <input type="text" id="patient-phone" placeholder="e.g. 9876543210">
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="patient-address">Address</label>
+                            <input type="text" id="patient-address" placeholder="e.g. 12 Elm Street, Springfield">
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-primary" id="save-patient-btn">Save Patient</button>
+                        <button type="button" class="btn btn-secondary" id="cancel-patient-form-btn">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <h3>All Registered Patients</h3>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Patient ID</th>
+                            <th>Full Name</th>
+                            <th>Date of Birth</th>
+                            <th>Gender</th>
+                            <th>Phone</th>
+                            <th>Blood Group</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="patients-tbody">
+                        <tr><td colspan="7" class="no-data">Loading registered patients...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="clinicians" class="tab-section">
+            <h2>Clinician Management</h2>
+
+            <div class="form-panel">
+                <h3>Add New Clinician</h3>
+                <form id="clinician-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="clinician-name">Clinician Name <span class="req">*</span></label>
+                            <input type="text" id="clinician-name" required placeholder="e.g. Dr. Robert Chen">
+                        </div>
+                        <div class="form-group">
+                            <label for="clinician-specialty">Specialty <span class="req">*</span></label>
+                            <input type="text" id="clinician-specialty" required placeholder="e.g. Cardiology, Pediatrics">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Clinician</button>
+                </form>
+            </div>
+
+            <h3>List of Clinicians</h3>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Clinician ID</th>
+                            <th>Clinician Name</th>
+                            <th>Specialty</th>
+                        </tr>
+                    </thead>
+                    <tbody id="clinicians-tbody">
+                        <tr><td colspan="3" class="no-data">Loading clinicians...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="encounters" class="tab-section">
+            <h2>Clinical Encounters</h2>
+
+            <div class="form-panel">
+                <h3>Record Clinical Encounter</h3>
+                <form id="encounter-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="encounter-patient-select">Patient <span class="req">*</span></label>
+                            <select id="encounter-patient-select" required>
+                                <option value="">-- Select Patient --</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="encounter-clinician-select">Attending Clinician <span class="req">*</span></label>
+                            <select id="encounter-clinician-select" required>
+                                <option value="">-- Select Clinician --</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="encounter-date">Encounter Date & Time <span class="req">*</span></label>
+                            <input type="datetime-local" id="encounter-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="encounter-diagnosis">Diagnosis <span class="req">*</span></label>
+                            <input type="text" id="encounter-diagnosis" required placeholder="e.g. Essential Hypertension">
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="encounter-symptoms">Symptoms</label>
+                            <textarea id="encounter-symptoms" placeholder="Record symptoms reported by patient..."></textarea>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="encounter-notes">Treatment Notes & Prescriptions</label>
+                            <textarea id="encounter-notes" placeholder="Prescribed medications, dosage instructions, dietary advice, follow-up timeline..."></textarea>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Record Encounter</button>
+                </form>
+            </div>
+
+            <h3>Recent Clinical Encounters (Chronological Order)</h3>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Encounter ID</th>
+                            <th>Date & Time</th>
+                            <th>Patient</th>
+                            <th>Attending Clinician</th>
+                            <th>Diagnosis</th>
+                            <th>Symptoms</th>
+                            <th>Treatment Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody id="all-encounters-tbody">
+                        <tr><td colspan="7" class="no-data">Loading clinical encounters...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="patient-details" class="tab-section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <h2>Comprehensive Patient Record</h2>
+                <div class="btn-group">
+                    <button class="btn btn-primary" id="quick-add-encounter-btn">+ Record Encounter for this Patient</button>
+                    <button class="btn btn-secondary" onclick="switchTab('patients')">&larr; Back to Patients List</button>
+                </div>
+            </div>
+
+            <div class="details-card">
+                <h3>Patient Demographics</h3>
+                <div class="details-grid" id="patient-master-info">
+                </div>
+            </div>
+
+            <h3>Known Allergies</h3>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Allergen</th>
+                            <th>Reported Reaction</th>
+                            <th>Severity</th>
+                        </tr>
+                    </thead>
+                    <tbody id="details-allergies-tbody">
+                        <tr><td colspan="3" class="no-data">No recorded allergies.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>Past Medical History</h3>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Condition Name</th>
+                            <th>Diagnosis Date</th>
+                            <th>Clinical Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="details-history-tbody">
+                        <tr><td colspan="3" class="no-data">No past medical history.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>Encounter History (Chronological Order)</h3>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Encounter ID</th>
+                            <th>Encounter Date</th>
+                            <th>Clinician</th>
+                            <th>Symptoms</th>
+                            <th>Diagnosis</th>
+                            <th>Treatment Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody id="details-encounters-tbody">
+                        <tr><td colspan="6" class="no-data">No past clinical encounters.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
